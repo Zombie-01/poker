@@ -309,22 +309,15 @@ const PokerTable: React.FC = () => {
     return { rank, suit };
   };
 
-  // NEW: build and shuffle deck helpers
-  const buildDeck = () => {
-    const ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-    const suits = ['H','D','C','S'];
-    const d: string[] = [];
-    for (const r of ranks) for (const s of suits) d.push(`${r}${s}`);
-    return d;
-  };
-
-  const shuffle = (arr: string[]) => {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
+  // NEW: return label + isRed flag for styling (e.g. "9♥", "J♦")
+  const formatCardLabel = (card?: string | null) => {
+    if (!card) return { label: '--', isRed: false };
+    const rank = card.slice(0, -1);
+    const suit = card.slice(-1);
+    const suitSymbols: Record<string, string> = { 'H': '♥', 'D': '♦', 'C': '♣', 'S': '♠' };
+    const symbol = suitSymbols[suit] || suit;
+    const isRed = suit === 'H' || suit === 'D';
+    return { label: `${rank}${symbol}`, isRed };
   };
 
   // derive variant and hole card count
@@ -488,6 +481,9 @@ const PokerTable: React.FC = () => {
     return [];
   };
 
+  // use local dealt players if a hand is dealt, otherwise show table positions
+  const seats = isDealt ? localPlayers : tablePositions;
+
   const winners = computeWinners();
 
   return (
@@ -532,15 +528,18 @@ const PokerTable: React.FC = () => {
 
             {/* Community cards */}
             <div className="absolute top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">
-              {communityCards.map((c, i) => (
-                <div key={i} className={`w-12 h-16 rounded-md border shadow-sm flex items-center justify-center font-bold ${c? 'bg-white text-black' : 'bg-green-700/30 text-white'}`}>
-                  {c ? `${c}` : '--'}
-                </div>
-              ))}
+              {communityCards.map((c, i) => {
+                const { label, isRed } = formatCardLabel(c);
+                return (
+                  <div key={i} className={`w-12 h-16 rounded-md border shadow-sm flex items-center justify-center font-bold ${c ? 'bg-white' : 'bg-green-700/30'} ${c ? 'text-black' : 'text-white'}`}>
+                    {c ? <span className={`${isRed ? 'text-red-500' : ''}`}>{label}</span> : '--'}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Seats */}
-            {tablePositions.map((player: Player, idx: number) => {
+            {seats.map((player: Player, idx: number) => {
               const pos = seatPositions(maxSeats)[idx] || { top: `${10 + idx*12}%`, left: `${20 + (idx%3)*30}%` };
               const isMe = player.user_id === state.user?.id;
 
@@ -558,10 +557,18 @@ const PokerTable: React.FC = () => {
                             {/* Render the correct number of hole cards depending on variant */}
                             {Array.from({length: holeCount}).map((_, i) => {
                               const cc = (player.cards || [])[i];
-                              const show = player.show_cards || isMe;
+                              const show = Boolean(player.show_cards || isMe);
+                              if (!show) {
+                                return (
+                                  <div key={i} className={`w-8 h-12 rounded-md border flex items-center justify-center text-xs font-bold bg-gray-700/30 text-white`}>
+                                    🂠
+                                  </div>
+                                );
+                              }
+                              const { label, isRed } = formatCardLabel(cc);
                               return (
-                                <div key={i} className={`w-8 h-12 rounded-md border flex items-center justify-center text-xs font-bold ${show ? 'bg-white text-black' : 'bg-gray-700/30 text-white'}`}>
-                                  {show ? (cc || '--') : '🂠'}
+                                <div key={i} className={`w-8 h-12 rounded-md border flex items-center justify-center text-xs font-bold bg-white text-black`}>
+                                  <span className={`${isRed ? 'text-red-500' : ''}`}>{label}</span>
                                 </div>
                               );
                             })}
@@ -635,6 +642,29 @@ const PokerTable: React.FC = () => {
       )}
     </div>
   );
+};
+
+// NEW: shuffle helper to randomize an array
+const shuffle = (arr: string[]) => {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+// NEW: buildDeck helper to create a new deck of cards
+const buildDeck = () => {
+  const suits = ['H', 'D', 'C', 'S'];
+  const ranks = Object.keys(RANK_ORDER);
+  const deck: string[] = [];
+  for (const suit of suits) {
+    for (const rank of ranks) {
+      deck.push(`${rank}${suit}`);
+    }
+  }
+  return deck;
 };
 
 export default PokerTable;
