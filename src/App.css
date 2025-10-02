@@ -1,0 +1,172 @@
+:root {
+  --primary: #242330;
+  --secondary: #2d2b3a;
+  --accent: #00d4aa;
+  --gold: #ffd700;
+  --green-felt: #0f5132;
+  --neon-blue: #00bfff;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --border: #374151;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+.app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+/* Smooth transitions for all interactive elements */
+button, .card, .chip, .interactive {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+/* Card animations */
+.card-enter {
+  opacity: 0;
+  transform: scale(0.8) rotateY(180deg);
+}
+
+.card-enter-active {
+  opacity: 1;
+  transform: scale(1) rotateY(0deg);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chip-animation {
+  animation: chipMove 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes chipMove {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.1); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Table felt effect */
+.poker-table {
+  background: radial-gradient(ellipse at center, #0d4d2a 0%, #0a3d21 100%);
+  box-shadow: 
+    inset 0 0 120px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 212, 170, 0.1);
+}
+
+/* Glassmorphism effects */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Loading spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-hidden {
+    display: none !important;
+  }
+  
+  .app {
+    padding-left: 240px;
+  }
+}
+
+/* PWA specific styles */
+@media (display-mode: standalone) {
+  .app {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* Auth UI Customization */
+.auth-container {
+  background: transparent !important;
+}
+
+.auth-button {
+  background: var(--accent) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.auth-button:hover {
+  background: var(--neon-blue) !important;
+  transform: translateY(-1px) !important;
+}
+
+.auth-input {
+  background: var(--secondary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
+}
+
+.auth-input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2) !important;
+}
+
+.auth-label {
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+}

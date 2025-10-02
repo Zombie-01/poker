@@ -1,0 +1,35 @@
+{
+  "name": "PokerPro - Premium Poker Platform",
+  "short_name": "PokerPro",
+  "description": "Premium multiplayer poker platform with real-time gameplay, tournaments, and social features",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#242330",
+  "theme_color": "#00d4aa",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/api/placeholder/192/192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/api/placeholder/512/512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "lang": "en",
+  "dir": "ltr",
+  "screenshots": [
+    {
+      "src": "/api/placeholder/1280/720",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "PokerPro Game Table"
+    }
+  ]
+}
